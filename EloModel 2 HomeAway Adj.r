@@ -35,35 +35,46 @@ if (step_1 == "Run") {
   games_data <- read.csv("data/games_2022_D1_master.csv", header = TRUE, sep = ",") # nolint
   team_ranking <- read.csv("data/ELO RANKINGS.csv", header = TRUE, sep = ",") # nolint
   # exclude Games played at NEUTRAL locations
-  games_data_without_neutral_games <- games_data[games_data$home_away != "neutral", ]
+  games_data_no_neutral <- games_data[games_data$home_away != "neutral", ] # nolint
   # Calculating League Summary data
-  league_summary <- aggregate(cbind(Wins = Win, Losses = Loss, Games = Win + Loss) ~ home_away, data = games_data_without_neutral_games, sum)
-  league_summary$WinPercentage <- round(as.numeric(league_summary$Wins) / as.numeric(league_summary$Games) * 100, 2)
+  league_summary <- aggregate(cbind(Wins = Win, Losses = Loss, Games = Win + Loss) ~ home_away, data = games_data_no_neutral, sum) # nolint
+  league_summary$WinPercentage <- round(as.numeric(league_summary$Wins) / as.numeric(league_summary$Games) * 100, 2) # nolint
   home_win_percentage <- league_summary$WinPercentage[league_summary$home_away == "home"] # nolint
-  away_win_percentage <- league_summary$WinPercentage[league_summary$home_away == "away"]
+  away_win_percentage <- league_summary$WinPercentage[league_summary$home_away == "away"] # nolint
   league_avg <- (home_win_percentage + away_win_percentage) / 2
   league_summary$Advantage <- NA
   league_summary$Advantage <- league_summary$WinPercentage - league_avg
   home_advantage <- league_summary$Advantage[league_summary$home_away == "home"]
   away_advantage <- league_summary$Advantage[league_summary$home_away == "away"]
-  # Update home_advantage and away_advantage to each game in games_data_without_neutral_games
-  games_data_without_neutral_games$HomeAdvRnd1 <- NA
-  games_data_without_neutral_games$HomeAdvRnd1[games_data_without_neutral_games$home_away == "home"] <- home_advantage
-  games_data_without_neutral_games$HomeAdvRnd1[games_data_without_neutral_games$home_away == "away"] <- away_advantage
+  # Update home_advantage and away_advantage to each game in games_data_no_neutral # nolint
+  games_data_no_neutral$HomeAdvRnd1 <- NA
+  games_data_no_neutral$HomeAdvRnd1[games_data_no_neutral$home_away == "home"] <- home_advantage # nolint
+  games_data_no_neutral$HomeAdvRnd1[games_data_no_neutral$home_away == "away"] <- away_advantage # nolint
   # Summarize the Home Away adjustment and Rank the teams
-  # Calculate average HomeAdvRnd1 for each team in game_data_without_neutral_games
-  team_avg_home_adv <- games_data_without_neutral_games %>%
+  # Calculate average HomeAdvRnd1 for each team in game_data_without_neutral_games # nolint
+  team_avg_home_adv <- games_data_no_neutral %>%
     group_by(team) %>%
-    summarize(HomeAwayAdj1Percentage = mean(HomeAdvRnd1, na.rm = TRUE)) #na.rm to remove NA values from mean
-  team_ranking <- merge(team_ranking, team_avg_home_adv, by = "team", all.x = TRUE)
-    # Calculate Round 1 percentage for HomeAdvRnd1
+    summarize(HomeAwayAdj1Percentage = mean(HomeAdvRnd1, na.rm = TRUE)) #na.rm to remove NA values from mean # nolint
+  team_ranking <- merge(team_ranking, team_avg_home_adv, by = "team", all.x = TRUE) # nolint
+  # Calculate Round 1 percentage for HomeAdvRnd1
   team_ranking$HWAdj1Percentage <- NA
-  team_ranking$HWAdj1Percentage <- team_ranking$RawWinPercentage + team_ranking$HomeAwayAdj1Percentage
+  team_ranking$HWAdj1Percentage <- team_ranking$RawWinPercentage + team_ranking$HomeAwayAdj1Percentage # nolint
+  # Create a new column name for storing the Ranking from the last Rank
+  cnames <- sort(grep("^WinRank", names(team_ranking), value = TRUE))
+  max_rank_column <- cnames[length(cnames)]
+  last_numeric_part <- regmatches(max_rank_column, regexpr("[0-9]+$", max_rank_column)) # nolint
+  if (length(last_numeric_part) > 0) {
+    new_last_numeric_part <- as.numeric(last_numeric_part) + 1
+    new_rank_column <- sub("[0-9]+$", new_last_numeric_part, max_rank_column)
+  } else {
+    new_rank_column <- "WinRank1" # Or handle error, etc.
+  }
+  # Creat New Ranking column
   team_ranking <- team_ranking %>%
     group_by(region) %>%
-    mutate(WinRank2 = dense_rank(desc(`HomeAwayAdj1Percentage`)))
+    mutate(!!new_rank_column := dense_rank(desc(`HomeAwayAdj1Percentage`)))
   write.csv(league_summary, "data/ELO League Summary.csv")
-  write.csv(games_data_without_neutral_games, "data/games_data_without_neutral_games.csv")
+  write.csv(games_data_no_neutral, "data/games_data_no_neutral.csv")
   write.csv(team_ranking, "data/ELO RANKINGS.csv")
   rm(league_summary)
   rm(team_avg_home_adv)
@@ -72,64 +83,86 @@ if (step_1 == "Run") {
 ## ELO MODEL STEP 2: ADJUSTMENTS - HOME_AWAY AND RANKING - ROUND 2
 ##################################################################
 if (step_2 == "Run") {
-  games_data_without_neutral_games <- read.csv("data/games_data_without_neutral_games.csv", header = TRUE, sep = ",") # nolint
+  games_data_no_neutral <- read.csv("data/games_data_no_neutral.csv", header = TRUE, sep = ",") # nolint
   team_ranking <- read.csv("data/ELO RANKINGS.csv", header = TRUE, sep = ",") # nolint
   league_summary <- read.csv("data/ELO League Summary.csv", header = TRUE, sep = ",") # nolint
   # Calculating League Summary data
   home_advantage <- league_summary$Advantage[league_summary$home_away == "home"]
   away_advantage <- league_summary$Advantage[league_summary$home_away == "away"]
-  # Update home_advantage and away_advantage to each game in games_data_without_neutral_games
-  games_data_without_neutral_games$HomeAdvRnd2 <- NA
-  games_data_without_neutral_games$HomeAdvRnd2[games_data_without_neutral_games$home_away == "home"] <- home_advantage
-  games_data_without_neutral_games$HomeAdvRnd2[games_data_without_neutral_games$home_away == "away"] <- away_advantage
+  # Update home_advantage and away_advantage to each game in games_data_no_neutral # nolint
+  games_data_no_neutral$HomeAdvRnd2 <- NA
+  games_data_no_neutral$HomeAdvRnd2[games_data_no_neutral$home_away == "home"] <- home_advantage # nolint
+  games_data_no_neutral$HomeAdvRnd2[games_data_no_neutral$home_away == "away"] <- away_advantage # nolint
   # Summarize the Home Away adjustment and Rank the teams
-  # Calculate average HomeAdvRnd2 for each team in game_data_without_neutral_games
-  team_avg_home_adv <- games_data_without_neutral_games %>%
+  # Calculate average HomeAdvRnd2 for each team in game_data_without_neutral_games # nolint
+  team_avg_home_adv <- games_data_no_neutral %>%
     group_by(team) %>%
-    summarize(HomeAwayAdj2Percentage = mean(HomeAdvRnd2, na.rm = TRUE)) #na.rm to remove NA values from mean
-  team_ranking <- merge(team_ranking, team_avg_home_adv, by = "team", all.x = TRUE)
-    # Calculate Round 2 percentage for HomeAdvRnd2
+    summarize(HomeAwayAdj2Percentage = mean(HomeAdvRnd2, na.rm = TRUE)) #na.rm to remove NA values from mean # nolint
+  team_ranking <- merge(team_ranking, team_avg_home_adv, by = "team", all.x = TRUE) # nolint
+  # Calculate Round 2 percentage for HomeAdvRnd2
   team_ranking$HWAdj2Percentage <- NA
-  team_ranking$HWAdj2Percentage <- team_ranking$HWAdj1Percentage + team_ranking$HomeAwayAdj2Percentage
+  team_ranking$HWAdj2Percentage <- team_ranking$HWAdj1Percentage + team_ranking$HomeAwayAdj2Percentage # nolint
+  # Create a new column name for storing the Ranking from the last Rank
+  cnames <- sort(grep("^WinRank", names(team_ranking), value = TRUE))
+  max_rank_column <- cnames[length(cnames)]
+  last_numeric_part <- regmatches(max_rank_column, regexpr("[0-9]+$", max_rank_column)) # nolint
+  if (length(last_numeric_part) > 0) {
+    new_last_numeric_part <- as.numeric(last_numeric_part) + 1
+    new_rank_column <- sub("[0-9]+$", new_last_numeric_part, max_rank_column)
+  } else {
+    new_rank_column <- "WinRank1" # Or handle error, etc.
+  }
+  # Creat New Ranking column
   team_ranking <- team_ranking %>%
     group_by(region) %>%
-    mutate(WinRank3 = dense_rank(desc(`HomeAwayAdj2Percentage`)))
+    mutate(!!new_rank_column := dense_rank(desc(`HomeAwayAdj2Percentage`)))
   rm(team_avg_home_adv)
   rm(league_summary)
-  write.csv(games_data_without_neutral_games, "data/games_data_without_neutral_games.csv")
+  write.csv(games_data_no_neutral, "data/games_data_no_neutral.csv")
   write.csv(team_ranking, "data/ELO RANKINGS.csv")
 }
 ##################################################################
 ## ELO MODEL STEP 3: ADJUSTMENTS - HOME_AWAY AND RANKING - ROUND 3
 ##################################################################
 if (step_3 == "Run") {
-  games_data_without_neutral_games <- read.csv("data/games_data_without_neutral_games.csv", header = TRUE, sep = ",") # nolint
+  games_data_no_neutral <- read.csv("data/games_data_no_neutral.csv", header = TRUE, sep = ",") # nolint
   team_ranking <- read.csv("data/ELO RANKINGS.csv", header = TRUE, sep = ",") # nolint
   league_summary <- read.csv("data/ELO League Summary.csv", header = TRUE, sep = ",") # nolint
   # Calculating League Summary data
   home_advantage <- league_summary$Advantage[league_summary$home_away == "home"]
   away_advantage <- league_summary$Advantage[league_summary$home_away == "away"]
-  # Update home_advantage and away_advantage to each game in games_data_without_neutral_games
-  games_data_without_neutral_games$HomeAdvRnd3 <- NA
-  games_data_without_neutral_games$HomeAdvRnd3[games_data_without_neutral_games$home_away == "home"] <- home_advantage
-  games_data_without_neutral_games$HomeAdvRnd3[games_data_without_neutral_games$home_away == "away"] <- away_advantage
+  # Update home_advantage and away_advantage to each game in games_data_no_neutral # nolint
+  games_data_no_neutral$HomeAdvRnd3 <- NA
+  games_data_no_neutral$HomeAdvRnd3[games_data_no_neutral$home_away == "home"] <- home_advantage # nolint
+  games_data_no_neutral$HomeAdvRnd3[games_data_no_neutral$home_away == "away"] <- away_advantage # nolint
   # Summarize the Home Away adjustment and Rank the teams
-  # Calculate average HomeAdvRnd3 for each team in game_data_without_neutral_games
-  team_avg_home_adv <- games_data_without_neutral_games %>%
+  # Calculate average HomeAdvRnd3 for each team in game_data_without_neutral_games # nolint
+  team_avg_home_adv <- games_data_no_neutral %>%
     group_by(team) %>%
-    summarize(HomeAwayAdj3Percentage = mean(HomeAdvRnd3, na.rm = TRUE)) #na.rm to remove NA values from mean
-  team_ranking <- merge(team_ranking, team_avg_home_adv, by = "team", all.x = TRUE)
-    # Calculate Round 1 percentage for HomeAdvRnd3
+    summarize(HomeAwayAdj3Percentage = mean(HomeAdvRnd3, na.rm = TRUE)) #na.rm to remove NA values from mean # nolint
+  team_ranking <- merge(team_ranking, team_avg_home_adv, by = "team", all.x = TRUE) # nolint
+  # Calculate Round 1 percentage for HomeAdvRnd3
   team_ranking$HWAdj3Percentage <- NA
-  team_ranking$HWAdj3Percentage <- team_ranking$HWAdj2Percentage + team_ranking$HomeAwayAdj3Percentage
+  team_ranking$HWAdj3Percentage <- team_ranking$HWAdj2Percentage + team_ranking$HomeAwayAdj3Percentage # nolint
+  # Create a new column name for storing the Ranking from the last Rank
+  cnames <- sort(grep("^WinRank", names(team_ranking), value = TRUE))
+  max_rank_column <- cnames[length(cnames)]
+  last_numeric_part <- regmatches(max_rank_column, regexpr("[0-9]+$", max_rank_column)) # nolint
+  if (length(last_numeric_part) > 0) {
+    new_last_numeric_part <- as.numeric(last_numeric_part) + 1
+    new_rank_column <- sub("[0-9]+$", new_last_numeric_part, max_rank_column)
+  } else {
+    new_rank_column <- "WinRank1" # Or handle error, etc.
+  }
+  # Creat New Ranking column
   team_ranking <- team_ranking %>%
     group_by(region) %>%
-    mutate(WinRank4 = dense_rank(desc(`HomeAwayAdj3Percentage`)))
+    mutate(!!new_rank_column := dense_rank(desc(`HomeAwayAdj3Percentage`)))
   rm(team_avg_home_adv)
   rm(league_summary)
-  write.csv(games_data_without_neutral_games, "data/games_data_without_neutral_games.csv")
+  write.csv(games_data_no_neutral, "data/games_data_no_neutral.csv")
   write.csv(team_ranking, "data/ELO RANKINGS.csv")
-  file.remove("data/games_data_without_neutral_games.csv")
+  file.remove("data/games_data_no_neutral.csv")
   file.remove("data/ELO League Summary.csv")
 
 }
@@ -139,7 +172,7 @@ if (step_3 == "Run") {
 if (step_4 == "Run") {
   team_ranking <- read.csv("data/ELO RANKINGS.csv", header = TRUE, sep = ",") # nolint
   team_ranking$HWAdjChangePercentage <- NA
-  team_ranking$HWAdjChangePercentage <- team_ranking$HWAdj3Percentage - team_ranking$RawWinPercentage
+  team_ranking$HWAdjChangePercentage <- team_ranking$HWAdj3Percentage - team_ranking$RawWinPercentage # nolint
   team_ranking$HWAdjChangeRank <- NA
   team_ranking$HWAdjChangeRank <- team_ranking$WinRank4 - team_ranking$WinRank1
   write.csv(team_ranking, "data/ELO RANKINGS.csv")

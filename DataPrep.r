@@ -5,6 +5,10 @@
 ## generates file games_2022_D1_master.csv afer cleaning it up and
 ## introducing calculated fields
 ##
+## INPUT DATA FRAME: data/games_2022 v2.csv
+## INPUT DATA FRAME: data/Regions.csv (which includes East teams)
+## OUTPUT DATA FRAME: data/games_2022_D1_master.csv
+##
 ## Programmer: Puja Ravi (International Academy)
 ######################################################## # nolint
 "2025 Wharton Data Science Competition"
@@ -111,7 +115,6 @@ if (step_4 == "Run") {
   print("START: Step_4 - ADD NEW CALCULATED COLUMNS")
   d1_games <- read.csv("data/games_2022_D1_master.csv", header = TRUE, sep = ",") # nolint
   # Add "Win" and "Loss" columns, initializing them to NA
-  # print(head(d1_games))
   d1_games$Win <- NA
   d1_games$Loss <- NA
   d1_games$Win[d1_games$team_score > d1_games$opponent_team_score] <- 1
@@ -121,7 +124,7 @@ if (step_4 == "Run") {
   d1_games$Win[d1_games$team_score == d1_games$opponent_team_score] <- 0.5
   d1_games$Loss[d1_games$team_score == d1_games$opponent_team_score] <- 0.5
   d1_games$Pts_dif <- NA
-  d1_games$Pts_dif <- abs(as.numeric(d1_games$team_score) - as.numeric(d1_games$opponent_team_score))
+  d1_games$Pts_dif <- abs(as.numeric(d1_games$team_score) - as.numeric(d1_games$opponent_team_score)) # nolint
   d1_games$FGP_2 <- NA
   d1_games$FGP_2 <- as.numeric(d1_games$FGM_2) / as.numeric(d1_games$FGA_2)
   d1_games$FGP_3 <- NA

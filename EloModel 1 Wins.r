@@ -2,7 +2,7 @@
 ## 2025 Wharton Data Science Competition
 ## EloModel.r
 ## This is program which takes file games_2022_D1_maste.csv and
-## generates Team Wins and ranks them based on Wins/Games only 
+## generates Team Wins and ranks them based on Wins/Games only
 ## using on ELO Model.
 ##
 ## INPUT FILE: data/games_2022_D1_master.csv
@@ -33,12 +33,23 @@ step_1 <- "Run"
 ########################################################
 if (step_1 == "Run") {
   games_data <- read.csv("data/games_2022_D1_master.csv", header = TRUE, sep = ",") # nolint
-  team_ranking <- aggregate(cbind(Wins = Win, Losses = Loss, Games = Win + Loss) ~ team + region, data = games_data, sum)
+  team_ranking <- aggregate(cbind(Wins = Win, Losses = Loss, Games = Win + Loss) ~ team + region, data = games_data, sum) # nolint
   team_ranking$RawWinPercentage <- NA
-  team_ranking$RawWinPercentage <- round(as.numeric(team_ranking$Wins) / as.numeric(team_ranking$Games) * 100, 2)
+  team_ranking$RawWinPercentage <- round(as.numeric(team_ranking$Wins) / as.numeric(team_ranking$Games) * 100, 2) # nolint
+  # Create a new column name for storing the Ranking from the last Rank
+  cnames <- sort(grep("^WinRank", names(team_ranking), value = TRUE))
+  max_rank_column <- cnames[length(cnames)]
+  last_numeric_part <- regmatches(max_rank_column, regexpr("[0-9]+$", max_rank_column)) # nolint
+  if (length(last_numeric_part) > 0) {
+    new_last_numeric_part <- as.numeric(last_numeric_part) + 1
+    new_rank_column <- sub("[0-9]+$", new_last_numeric_part, max_rank_column)
+  } else {
+    new_rank_column <- "WinRank1" # Or handle error, etc.
+  }
+  # Creat New Ranking column
   team_ranking <- team_ranking %>%
     group_by(region) %>%
-    mutate(WinRank1 = dense_rank(desc(`RawWinPercentage`)))
-    write.csv(team_ranking, "data/ELO RANKINGS.csv")
+    mutate(!!new_rank_column := dense_rank(desc(`RawWinPercentage`)))
+  write.csv(team_ranking, "data/ELO RANKINGS.csv")
 }
 print("MODULE END: ELO MODEL: RANK BY WINS ONLY")
