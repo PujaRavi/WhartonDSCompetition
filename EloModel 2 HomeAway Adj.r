@@ -21,7 +21,7 @@ library(dplyr)
 ## ELO MODEL STEP 1: ADJUSTMENTS - HOME_AWAY AND RANKING - ROUND 1
 ## ELO MODEL STEP 2: ADJUSTMENTS - HOME_AWAY AND RANKING - ROUND 2
 ## ELO MODEL STEP 3: ADJUSTMENTS - HOME_AWAY AND RANKING - ROUND 3
-## ELO MODEL STEP 4: ADJUSTMENTS HOME AWAY CHANGE FROOM RAW TO ROUND 3
+## ELO MODEL STEP 4: ADJUSTMENTS HOME AWAY CHANGE FROM RAW TO ROUND 3
 #############################################################
 step_1 <- "Run"
 step_2 <- "Run"
@@ -59,16 +59,7 @@ if (step_1 == "Run") {
   # Calculate Round 1 percentage for HomeAdvRnd1
   team_ranking$HWAdj1Percentage <- NA
   team_ranking$HWAdj1Percentage <- team_ranking$RawWinPercentage + team_ranking$HomeAwayAdj1Percentage # nolint
-  # Create a new column name for storing the Ranking from the last Rank
-  cnames <- sort(grep("^WinRank", names(team_ranking), value = TRUE))
-  max_rank_column <- cnames[length(cnames)]
-  last_numeric_part <- regmatches(max_rank_column, regexpr("[0-9]+$", max_rank_column)) # nolint
-  if (length(last_numeric_part) > 0) {
-    new_last_numeric_part <- as.numeric(last_numeric_part) + 1
-    new_rank_column <- sub("[0-9]+$", new_last_numeric_part, max_rank_column)
-  } else {
-    new_rank_column <- "WinRank1" # Or handle error, etc.
-  }
+  new_rank_column <- "RankHAAdj1"
   # Creat New Ranking column
   team_ranking <- team_ranking %>%
     group_by(region) %>%
@@ -102,16 +93,7 @@ if (step_2 == "Run") {
   # Calculate Round 2 percentage for HomeAdvRnd2
   team_ranking$HWAdj2Percentage <- NA
   team_ranking$HWAdj2Percentage <- team_ranking$HWAdj1Percentage + team_ranking$HomeAwayAdj2Percentage # nolint
-  # Create a new column name for storing the Ranking from the last Rank
-  cnames <- sort(grep("^WinRank", names(team_ranking), value = TRUE))
-  max_rank_column <- cnames[length(cnames)]
-  last_numeric_part <- regmatches(max_rank_column, regexpr("[0-9]+$", max_rank_column)) # nolint
-  if (length(last_numeric_part) > 0) {
-    new_last_numeric_part <- as.numeric(last_numeric_part) + 1
-    new_rank_column <- sub("[0-9]+$", new_last_numeric_part, max_rank_column)
-  } else {
-    new_rank_column <- "WinRank1" # Or handle error, etc.
-  }
+  new_rank_column <- "RankHAAdj2"
   # Creat New Ranking column
   team_ranking <- team_ranking %>%
     group_by(region) %>%
@@ -144,16 +126,7 @@ if (step_3 == "Run") {
   # Calculate Round 1 percentage for HomeAdvRnd3
   team_ranking$HWAdj3Percentage <- NA
   team_ranking$HWAdj3Percentage <- team_ranking$HWAdj2Percentage + team_ranking$HomeAwayAdj3Percentage # nolint
-  # Create a new column name for storing the Ranking from the last Rank
-  cnames <- sort(grep("^WinRank", names(team_ranking), value = TRUE))
-  max_rank_column <- cnames[length(cnames)]
-  last_numeric_part <- regmatches(max_rank_column, regexpr("[0-9]+$", max_rank_column)) # nolint
-  if (length(last_numeric_part) > 0) {
-    new_last_numeric_part <- as.numeric(last_numeric_part) + 1
-    new_rank_column <- sub("[0-9]+$", new_last_numeric_part, max_rank_column)
-  } else {
-    new_rank_column <- "WinRank1" # Or handle error, etc.
-  }
+  new_rank_column <- "RankHAAdj3"
   # Creat New Ranking column
   team_ranking <- team_ranking %>%
     group_by(region) %>%
@@ -174,7 +147,7 @@ if (step_4 == "Run") {
   team_ranking$HWAdjChangePercentage <- NA
   team_ranking$HWAdjChangePercentage <- team_ranking$HWAdj3Percentage - team_ranking$RawWinPercentage # nolint
   team_ranking$HWAdjChangeRank <- NA
-  team_ranking$HWAdjChangeRank <- team_ranking$WinRank4 - team_ranking$WinRank1
+  team_ranking$HWAdjChangeRank <- team_ranking$RankHAAdj3 - team_ranking$RankWins
   write.csv(team_ranking, "data/ELO RANKINGS.csv")
 }
 print("MODULE END: ELO MODEL: RANK BY HOME AWAY ADJUSTMENTS")

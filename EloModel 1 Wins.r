@@ -36,16 +36,7 @@ if (step_1 == "Run") {
   team_ranking <- aggregate(cbind(Wins = Win, Losses = Loss, Games = Win + Loss) ~ team + region, data = games_data, sum) # nolint
   team_ranking$RawWinPercentage <- NA
   team_ranking$RawWinPercentage <- round(as.numeric(team_ranking$Wins) / as.numeric(team_ranking$Games) * 100, 2) # nolint
-  # Create a new column name for storing the Ranking from the last Rank
-  cnames <- sort(grep("^WinRank", names(team_ranking), value = TRUE))
-  max_rank_column <- cnames[length(cnames)]
-  last_numeric_part <- regmatches(max_rank_column, regexpr("[0-9]+$", max_rank_column)) # nolint
-  if (length(last_numeric_part) > 0) {
-    new_last_numeric_part <- as.numeric(last_numeric_part) + 1
-    new_rank_column <- sub("[0-9]+$", new_last_numeric_part, max_rank_column)
-  } else {
-    new_rank_column <- "WinRank1" # Or handle error, etc.
-  }
+  new_rank_column <- "RankWins"
   # Creat New Ranking column
   team_ranking <- team_ranking %>%
     group_by(region) %>%

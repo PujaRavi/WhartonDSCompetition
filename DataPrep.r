@@ -13,6 +13,7 @@
 ######################################################## # nolint
 "2025 Wharton Data Science Competition"
 print("MODULE START: DATA PREPARATION")
+library(dplyr)
 #############################################################
 ## DATA PREP: RUN CONTROLLER USED TO MAKE CERTAIN MODULES RUN
 #############################################################
@@ -108,6 +109,7 @@ if (step_3 == "Run") {
 ## FGP_2: Create a new column to percentage the Field Throw 2 pointer # nolint
 ## FGP_3: Create a new column to percentage the Field Throw 3 pointer # nolint
 ## FTP: Free through percentage
+## DREB: Create new column for DREB percentage
 ## OUTPUT DATA FRAME: data/games_2022_D1_master.csv
 ########################################################
 if (step_4 == "Run") {
@@ -132,10 +134,24 @@ if (step_4 == "Run") {
   d1_games$FTP <- NA
   d1_games$FTP <- as.numeric(d1_games$FTM) / as.numeric(d1_games$FTA)
   d1_games$FTP[is.na(d1_games$FTP)] <- 0
-  d1_games$X.1 <- NULL
-  d1_games$X.2 <- NULL
-  d1_games$Y <- NULL
-  d1_games$X <- NULL
+  d1_games$REBT <- NA
+  d1_games$REBT <- suppressWarnings(as.numeric(as.character(d1_games$DREB))) + suppressWarnings(as.numeric(as.character(d1_games$OREB))) + suppressWarnings(as.numeric(as.character(d1_games$BLK))) + suppressWarnings(as.numeric(as.character(d1_games$AST))) + suppressWarnings(as.numeric(as.character(d1_games$STL)))# nolint
+  d1_games <- d1_games %>%
+    mutate(REBT = suppressWarnings(as.numeric(as.character(REBT)))) %>%
+    filter(!is.na(REBT)) %>%
+    mutate(REBP = (REBT / sum(REBT)) * 100)
+  d1_games$TOVT <- NA
+  d1_games$TOVT <- suppressWarnings(as.numeric(as.character(d1_games$TOV))) + suppressWarnings(as.numeric(as.character(d1_games$TOV_team))) # nolint
+  d1_games <- d1_games %>%
+    mutate(TOVT = suppressWarnings(as.numeric(as.character(TOVT)))) %>%
+    filter(!is.na(TOVT)) %>%
+    mutate(TOVP = (TOVT / sum(TOVT)) * 100)
+  d1_games$largest_leadT <- NA
+  d1_games$largest_leadT <- suppressWarnings(as.numeric(as.character(d1_games$largest_lead))) # nolint
+  d1_games <- d1_games %>%
+    mutate(largest_leadT = suppressWarnings(as.numeric(as.character(largest_leadT)))) %>%
+    filter(!is.na(largest_leadT)) %>%
+    mutate(largest_leadP = (largest_leadT / sum(largest_leadT)) * 100)
   d1_games <- d1_games[d1_games$home_away != "home_away", ]
   write.csv(d1_games, "data/games_2022_D1_master.csv")
   print("END: Step_4")

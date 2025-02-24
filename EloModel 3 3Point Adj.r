@@ -3,7 +3,7 @@
 ## EloModel.r
 ## This is program which takes file games_2022_D1_maste.csv and
 ## and the ELO Ranking.csv files and applies
-## HomeAway adjustments in 3 rounds
+## 3-Point Field Goals adjustments in 3 rounds
 ## Then it ranks the teams from four Regions
 ##
 ## INPUT FILE: data/games_2022_D1_master.csv
@@ -51,16 +51,7 @@ if (step_1 == "Run") {
   # Calculate Round 1 percentage for FG3AdvRnd1
   team_ranking$FG3Adj1Percentage <- NA
   team_ranking$FG3Adj1Percentage <- team_ranking$HomeAwayAdj3Percentage + team_ranking$FieldGoal3Adj1Percentage # nolint
-  # Create a new column name for storing the Ranking from the last Rank
-  cnames <- sort(grep("^WinRank", names(team_ranking), value = TRUE))
-  max_rank_column <- cnames[length(cnames)]
-  last_numeric_part <- regmatches(max_rank_column, regexpr("[0-9]+$", max_rank_column)) # nolint
-  if (length(last_numeric_part) > 0) {
-    new_last_numeric_part <- as.numeric(last_numeric_part) + 1
-    new_rank_column <- sub("[0-9]+$", new_last_numeric_part, max_rank_column)
-  } else {
-    new_rank_column <- "WinRank1" # Or handle error, etc.
-  }
+  new_rank_column <- "RankFG3Adj1"
   team_ranking <- team_ranking %>%
     group_by(region) %>%
     mutate(!!new_rank_column := dense_rank(desc(`FG3Adj1Percentage`)))
@@ -91,16 +82,7 @@ if (step_2 == "Run") {
   # Calculate Round 2 percentage for FG3AdvRnd1
   team_ranking$FG3Adj2Percentage <- NA
   team_ranking$FG3Adj2Percentage <- team_ranking$FG3Adj1Percentage + team_ranking$FieldGoal3Adj2Percentage # nolint
-  # Create a new column name for storing the Ranking from the last Rank
-  cnames <- sort(grep("^WinRank", names(team_ranking), value = TRUE))
-  max_rank_column <- cnames[length(cnames)]
-  last_numeric_part <- regmatches(max_rank_column, regexpr("[0-9]+$", max_rank_column)) # nolint
-  if (length(last_numeric_part) > 0) {
-    new_last_numeric_part <- as.numeric(last_numeric_part) + 1
-    new_rank_column <- sub("[0-9]+$", new_last_numeric_part, max_rank_column)
-  } else {
-    new_rank_column <- "WinRank1" # Or handle error, etc.
-  }
+  new_rank_column <- "RankFG3Adj2"
   team_ranking <- team_ranking %>%
     group_by(region) %>%
     mutate(!!new_rank_column := dense_rank(desc(`FG3Adj2Percentage`)))
@@ -131,16 +113,7 @@ if (step_3 == "Run") {
   # Calculate Round 2 percentage for FG3AdvRnd3
   team_ranking$FG3Adj3Percentage <- NA
   team_ranking$FG3Adj3Percentage <- team_ranking$FG3Adj2Percentage + team_ranking$FieldGoal3Adj3Percentage # nolint
-  # Create a new column name for storing the Ranking from the last Rank
-  cnames <- sort(grep("^WinRank", names(team_ranking), value = TRUE))
-  max_rank_column <- cnames[length(cnames)]
-  last_numeric_part <- regmatches(max_rank_column, regexpr("[0-9]+$", max_rank_column)) # nolint
-  if (length(last_numeric_part) > 0) {
-    new_last_numeric_part <- as.numeric(last_numeric_part) + 1
-    new_rank_column <- sub("[0-9]+$", new_last_numeric_part, max_rank_column)
-  } else {
-    new_rank_column <- "WinRank1" # Or handle error, etc.
-  }
+   new_rank_column <- "RankFG3Adj3"
   team_ranking <- team_ranking %>%
     group_by(region) %>%
     mutate(!!new_rank_column := dense_rank(desc(`FG3Adj3Percentage`)))
@@ -153,9 +126,9 @@ if (step_3 == "Run") {
 if (step_4 == "Run") {
   team_ranking <- read.csv("data/ELO RANKINGS.csv", header = TRUE, sep = ",") # nolint
   team_ranking$FG3AdjChangePercentage <- NA
-  team_ranking$FG3AdjChangePercentage <- team_ranking$FG3Adj3Percentage - team_ranking$RawWinPercentage # nolint
+  team_ranking$FG3AdjChangePercentage <- team_ranking$FG3Adj3Percentage - team_ranking$HomeAwayAdj3Percentage # nolint
   team_ranking$FG3AdjChangeRank <- NA
-  team_ranking$FG3AdjChangeRank <- team_ranking$WinRank7 - team_ranking$WinRank4
+  team_ranking$FG3AdjChangeRank <- team_ranking$RankFG3Adj3 - team_ranking$RankHAAdj3
   write.csv(team_ranking, "data/ELO RANKINGS.csv")
 }
 print("MODULE END: ELO MODEL: RANK BY 3-POINT FIELD GOAL ADJUSTMENTS")
