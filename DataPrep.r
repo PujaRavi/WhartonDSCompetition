@@ -38,7 +38,7 @@ if (step_1 == "Run") {
   ########################################################
   # load games_2022 data into data frame
   print("START: Step_1 - SEPARATE TO D1 AND D2 GAMES")
-  games_data <- read.csv("data/games_2022 v2.csv", header = TRUE, sep = ",") # nolint
+  games_data <- read.csv("data/games_2022 v2_80.csv", header = TRUE, sep = ",") # nolint
   ## print(Games_Data) # nolint
   if ("notD1_incomplete" %in% colnames(games_data)) {
     # Extract rows where D2 is TRUE
@@ -149,7 +149,7 @@ if (step_4 == "Run") {
   d1_games$largest_leadT <- NA
   d1_games$largest_leadT <- suppressWarnings(as.numeric(as.character(d1_games$largest_lead))) # nolint
   d1_games <- d1_games %>%
-    mutate(largest_leadT = suppressWarnings(as.numeric(as.character(largest_leadT)))) %>%
+    mutate(largest_leadT = suppressWarnings(as.numeric(as.character(largest_leadT)))) %>% # nolint
     filter(!is.na(largest_leadT)) %>%
     mutate(largest_leadP = (largest_leadT / sum(largest_leadT)) * 100)
   d1_games <- d1_games[d1_games$home_away != "home_away", ]

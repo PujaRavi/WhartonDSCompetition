@@ -19,6 +19,8 @@ EloModel_FreeThrow <- "Run" # nolint
 EloModel_REB <- "Run" # nolint
 EloModel_TOV <- "Run" # nolint
 EloModel_Margins <- "Run" # nolint
+EloModel_Ranking <- "Run" # nolint
+EloModel_Accuracy <- "Run" # nolint
 print("Program Started")
 if (Data_Preparation == "Run") {
   # Cleaup the data and introduce calculated fields
@@ -55,5 +57,13 @@ if (EloModel_TOV == "Run") {
 if (EloModel_Margins == "Run") {
   # Rank after TOV adjustments - 3 Rounds
   source("EloModel 8 Margin Adj.r")
+}
+if (EloModel_Ranking == "Run") {
+  # Rank after TOV adjustments - 3 Rounds
+  source("EloModel 9 Ranking Analysis.r")
+}
+if (EloModel_Accuracy == "Run") {
+  # Rank after TOV adjustments - 3 Rounds
+  source("EloModel 10 Testing Models.r")
 }
 print("Program Ended")
