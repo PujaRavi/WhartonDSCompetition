@@ -1,0 +1,11 @@
+"","game_id","description","team_home","team_away","seed_home","seed_away","home_away_NS","rest_days_Home","rest_days_Away","travel_dist_Home","travel_dist_Away","WINNING..","team_home_rank","team_home_perc","team_home_win_perc","team_away_rank","team_away_perc","team_away_win_perc"
+"1","G_East_1","play-in-game","rhode_island_rams","north_carolina_tar_heels",16,17,0,6,1,0,770,68.16,7.5,83.3627272727273,68.16,31,73.4827272727273,31.84
+"2","G_East_2","play-in team A v 1","nc_state_wolfpack","rhode_island_rams",1,16,0,7,1,1440,0,57.7572727272727,9.5,82.84,57.7572727272727,7.5,83.3627272727273,42.2427272727273
+"3","G_East_3","play-in team B v 1","nc_state_wolfpack","north_carolina_tar_heels",1,17,0,7,1,1440,770,67.6372727272727,9.5,82.84,67.6372727272727,31,73.4827272727273,32.3627272727273
+"4","G_East_4","2 v 15","liberty_flames","bucknell_bison",2,9,0,7,10,255,250,80.7473684210526,1,92.2173684210526,80.7473684210526,54,69.75,19.2526315789474
+"5","G_East_5","3 v 14","drexel_dragons","delaware_blue_hens",3,10,0,11,9,0,680,77.044947368421,3,88.016,77.044947368421,56,69.251052631579,22.955052631579
+"6","G_East_6","4 v 13","massachusetts_minutewomen","princeton_tigers",4,11,0,9,7,75,34,59.0327272727273,15,80.7527272727273,59.0327272727273,19.5,80,40.9672727272727
+"7","G_East_7","5 v 12","buffalo_bulls","stony_brook_seawolves",5,12,0,8,8,60,3400,64.4672727272727,46,64.7527272727273,35.5327272727273,6,87.5,64.4672727272727
+"8","G_East_8","6 v 11","fairfield_stags","towson_tigers",6,13,0,7,9,20,220,51.9271428571429,44,72.7271428571429,51.9271428571429,28,79.08,48.0728571428571
+"9","G_East_9","7 v 10","uconn_huskies","campbell_fighting_camels",7,14,0,9,10,15,1966,60.8909411764706,27,76.7829411764706,60.8909411764706,35,74.172,39.1090588235294
+"10","G_East_10","8 v 9","american_university_eagles","columbia_lions",8,15,0,7,8,350,145,52.7883458646617,47,68.5742857142857,47.2116541353383,25,79.6426315789474,52.7883458646617

@@ -6,7 +6,7 @@
 ## using on ELO Model.
 ##
 ## INPUT FILE: data/games_2022_D1_master.csv
-## OUTPUT FILE: data/ELO Rankings.csv
+## OUTPUT FILE: data/ELO RANKINGS.csv
 ##
 ## Programmer: Puja Ravi (International Academy)
 ######################################################## # nolint

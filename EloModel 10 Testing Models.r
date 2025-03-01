@@ -25,13 +25,13 @@ game_win_loss <- game_data %>%
   ) %>%
   ungroup() #important to ungroup.
 game_win_loss$team1Rank <- NA
-game_win_loss$team1Rank <- ranking_data$FinalRank[match(game_win_loss$team1, ranking_data$team)]
+game_win_loss$team1Rank <- ranking_data$FinalRank[match(game_win_loss$team1, ranking_data$team)] # nolint
 game_win_loss$team2Rank <- NA
-game_win_loss$team2Rank <- ranking_data$FinalRank[match(game_win_loss$team2, ranking_data$team)]
-game_win_loss <- game_win_loss[!is.na(game_win_loss$team1Rank) & !is.na(game_win_loss$team2Rank), ]
+game_win_loss$team2Rank <- ranking_data$FinalRank[match(game_win_loss$team2, ranking_data$team)] # nolint
+game_win_loss <- game_win_loss[!is.na(game_win_loss$team1Rank) & !is.na(game_win_loss$team2Rank), ] # nolint
 game_win_loss$ActualTeam1Win <- ifelse(game_win_loss$team1win == 1, 1, 0)
-game_win_loss$PredictTeam1Win <- ifelse(game_win_loss$team1Rank < game_win_loss$team2Rank, 1, 0)
-game_win_loss$PredictMatch <- ifelse(game_win_loss$PredictTeam1Win == game_win_loss$ActualTeam1Win, 100, 0)
+game_win_loss$PredictTeam1Win <- ifelse(game_win_loss$team1Rank < game_win_loss$team2Rank, 1, 0) # nolint
+game_win_loss$PredictMatch <- ifelse(game_win_loss$PredictTeam1Win == game_win_loss$ActualTeam1Win, 100, 0) # nolint
 count_success <- sum(game_win_loss$PredictMatch == 100)
 num_rows <- nrow(game_win_loss)
 game_win_loss$AccuracyPercentage <- (count_success / num_rows) * 100

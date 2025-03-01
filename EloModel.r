@@ -21,6 +21,8 @@ EloModel_TOV <- "Run" # nolint
 EloModel_Margins <- "Run" # nolint
 EloModel_Ranking <- "Run" # nolint
 EloModel_Accuracy <- "Run" # nolint
+EloModel_Results_Extraction <- "Run" # nolint
+EloModel_TempDataCleanup <- "Run" # nolint
 print("Program Started")
 if (Data_Preparation == "Run") {
   # Cleaup the data and introduce calculated fields
@@ -65,5 +67,13 @@ if (EloModel_Ranking == "Run") {
 if (EloModel_Accuracy == "Run") {
   # Rank after TOV adjustments - 3 Rounds
   source("EloModel 10 Testing Models.r")
+}
+if (EloModel_Results_Extraction == "Run") {
+  # Rank after TOV adjustments - 3 Rounds
+  source("EloModel 11 Results Extraction.r")
+}
+if (EloModel_TempDataCleanup == "Run") {
+  # Rank after TOV adjustments - 3 Rounds
+  source("EloModel 12 EloTempDataCleanup.r")
 }
 print("Program Ended")

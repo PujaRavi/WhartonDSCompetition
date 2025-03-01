@@ -9,6 +9,8 @@
 ## INPUT FILE: data/games_2022_D1_master.csv
 ## INPUT FILE: data/ELO Rankings.csv
 ## OUTPUT FILE: data/ELO Rankings.csv
+## OUTPUT FILE: data/ELO League summary.csv
+## OUTPUT FILE: data/games_data_no_neutral.csv
 ##
 ## Programmer: Puja Ravi (International Academy)
 ######################################################## # nolint
@@ -59,6 +61,7 @@ if (step_1 == "Run") {
   # Calculate Round 1 percentage for HomeAdvRnd1
   team_ranking$HWAdj1Percentage <- NA
   team_ranking$HWAdj1Percentage <- team_ranking$RawWinPercentage + team_ranking$HomeAwayAdj1Percentage # nolint
+
   new_rank_column <- "RankHAAdj1"
   # Creat New Ranking column
   team_ranking <- team_ranking %>%
@@ -135,9 +138,6 @@ if (step_3 == "Run") {
   rm(league_summary)
   write.csv(games_data_no_neutral, "data/games_data_no_neutral.csv")
   write.csv(team_ranking, "data/ELO RANKINGS.csv")
-  file.remove("data/games_data_no_neutral.csv")
-  file.remove("data/ELO League Summary.csv")
-
 }
 ##########################################################################
 ## ELO MODEL STEP 4: ADJUSTMENTS HOME AWAY CHANGE FROOM RAW TO ROUND 3

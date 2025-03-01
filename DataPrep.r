@@ -5,9 +5,11 @@
 ## generates file games_2022_D1_master.csv afer cleaning it up and
 ## introducing calculated fields
 ##
-## INPUT DATA FRAME: data/games_2022 v2.csv
+## INPUT DATA FRAME: data/games_2022 v2_80.csv
 ## INPUT DATA FRAME: data/Regions.csv (which includes East teams)
 ## OUTPUT DATA FRAME: data/games_2022_D1_master.csv
+## OUTPUT DATA FRAME: data/games_2022_D1.csv
+## OUTPUT DATA FRAME: data/games_2022_D2.csv
 ##
 ## Programmer: Puja Ravi (International Academy)
 ######################################################## # nolint
@@ -17,15 +19,74 @@ library(dplyr)
 #############################################################
 ## DATA PREP: RUN CONTROLLER USED TO MAKE CERTAIN MODULES RUN
 #############################################################
+## DATA PREP STEP 0: CLEAN OLD DATA FILES
 ## DATA PREP STEP 1: REMOVE D2 GAMES
 ## DATA PREP STEP 2: UPDATE HOME_AWAY COLUMN
 ## DATA PREP STEP 3: ADD AND UPDATE REGIONS COLUMN
 ## DATA PREP STEP 4: ADD NEW CALCULATED COLUMNS
 #############################################################
+step_0 <- "Run"
 step_1 <- "Run"
 step_2 <- "Run"
 step_3 <- "Run"
 step_4 <- "Run"
+########################################################
+## DATA PREP STEP 0: REMOVE D2 GAMES
+########################################################
+if (step_0 == "Run") {
+  file_path <- "data/games_2022_D1_master.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/games_2022_D1.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/games_2022_D2.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/ELO RANKINGS.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/ELO League Summary.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/games_data_no_neutral.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/ELO_EastRegionRanking.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/ELO_EastRegionWinPercentages.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/ELO_WestRegionRanking.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/NorthRegionRanking.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/SouthRegionRanking.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/ELO_TESTING_MODELS.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+  file_path <- "data/ELO_FINAL_RANKINGS.csv"
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }
+}
 ########################################################
 ## DATA PREP STEP 1: REMOVE D2 GAMES
 ########################################################
