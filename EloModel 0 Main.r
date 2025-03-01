@@ -74,6 +74,6 @@ if (EloModel_Results_Extraction == "Run") {
 }
 if (EloModel_TempDataCleanup == "Run") {
   # Rank after TOV adjustments - 3 Rounds
-  source("EloModel 12 EloTempDataCleanup.r")
+  source("EloModel 12 TempDataCleanup.r")
 }
 print("Program Ended")

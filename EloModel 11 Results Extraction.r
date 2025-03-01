@@ -20,20 +20,20 @@ ranking_data <- read.csv("data/ELO_FINAL_RANKINGS.csv", header = TRUE, sep = ","
 columns_to_select <- c("team", "region", "FinalRank")
 ranking_data_North <- ranking_data[ranking_data$region == "North", columns_to_select ] # nolint
 ranking_data_North <- ranking_data_North[order(ranking_data_North$"FinalRank"), ] # nolint
-ranking_data_North$rankseq_number <- NA # nolint
-ranking_data_North$rankseq_number <- 1:nrow(ranking_data_North) # nolint
+ranking_data_North$elo_rank <- NA # nolint
+ranking_data_North$elo_rank <- 1:nrow(ranking_data_North) # nolint
 ranking_data_South <- ranking_data[ranking_data$region == "South", columns_to_select ] # nolint
 ranking_data_South <- ranking_data_South[order(ranking_data_South$"FinalRank"), ] # nolint
-ranking_data_South$rankseq_number <- NA # nolint
-ranking_data_South$rankseq_number <- 1:nrow(ranking_data_South) # nolint
+ranking_data_South$elo_rank <- NA # nolint
+ranking_data_South$elo_rank <- 1:nrow(ranking_data_South) # nolint
 ranking_data_West <- ranking_data[ranking_data$region == "West", columns_to_select ] # nolint
 ranking_data_West <- ranking_data_West[order(ranking_data_West$"FinalRank"), ] # nolint
-ranking_data_West$rankseq_number <- NA # nolint
-ranking_data_West$rankseq_number <- 1:nrow(ranking_data_West) # nolint
+ranking_data_West$elo_rank <- NA # nolint
+ranking_data_West$elo_rank <- 1:nrow(ranking_data_West) # nolint
 ranking_data_East <- ranking_data[ranking_data$region == "East", columns_to_select ] # nolint
 ranking_data_East <- ranking_data_East[order(ranking_data_East$"FinalRank"), ] # nolint
-ranking_data_East$rankseq_number <- NA # nolint
-ranking_data_East$rankseq_number <- 1:nrow(ranking_data_East) # nolint
+ranking_data_East$elo_rank <- NA # nolint
+ranking_data_East$elo_rank <- 1:nrow(ranking_data_East) # nolint
 write.csv(ranking_data_North, "data/ELO_NorthRegionRanking.csv")
 write.csv(ranking_data_South, "data/ELO_SouthRegionRanking.csv")
 write.csv(ranking_data_West, "data/ELO_WestRegionRanking.csv")

@@ -26,35 +26,35 @@ step_1 <- "Run"
 ## DATA PREP STEP 0: REMOVE D2 GAMES
 ########################################################
 if (step_1 == "Run") {
-  file_path <- "data/games_2022_D1_master.csv" # Replace with the actual file path
+  file_path <- "data/MC_games_data_east.csv" # Replace with the actual file path
   if (file.exists(file_path)) {
     file.remove(file_path)
   }
-  file_path <- "data/games_2022_D1.csv" # Replace with the actual file path
+  file_path <- "data/MC_games_data_west.csv" # Replace with the actual file path
   if (file.exists(file_path)) {
     file.remove(file_path)
   }
-  file_path <- "data/games_2022_D2.csv" # Replace with the actual file path
+  file_path <- "data/MC_games_data_north.csv" # Replace with the actual file path
   if (file.exists(file_path)) {
     file.remove(file_path)
   }
-  file_path <- "data/ELO RANKINGS.csv" # Replace with the actual file path
+  file_path <- "data/MC_games_data_south.csv" # Replace with the actual file path
+  if (file.exists(file_path)) {
+    file.remove(file_path)
+  }  
+  file_path <- "data/MC_games_data.csv" # Replace with the actual file path
   if (file.exists(file_path)) {
     file.remove(file_path)
   }
-  file_path <- "data/ELO League Summary.csv" # Replace with the actual file path
+  file_path <- "data/MC_Results_M.csv" # Replace with the actual file path
   if (file.exists(file_path)) {
     file.remove(file_path)
   }
-  file_path <- "data/games_data_no_neutral.csv" # Replace with the actual file path
+  file_path <- "data/MC_Results_b.csv" # Replace with the actual file path
   if (file.exists(file_path)) {
     file.remove(file_path)
   }
-  file_path <- "data/ELO_TESTING_MODELS.csv" # Replace with the actual file path
-  if (file.exists(file_path)) {
-    file.remove(file_path)
-  }
-  file_path <- "data/ELO_FINAL_RANKINGS.csv" # Replace with the actual file path
+  file_path <- "data/MC_Results_p.csv" # Replace with the actual file path
   if (file.exists(file_path)) {
     file.remove(file_path)
   }
